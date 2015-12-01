@@ -1,10 +1,12 @@
 # UE4 Project directories to ignore
-*/GreyMatter/Binaries/
-*/GreyMatter/DerivedDataCache/
-*/GreyMatter/Intermediate/
-*/GreyMatter/Saved/
-*/GreyMatter/Build/
-*/GreyMatter/Content/StarterContent/
+*Binaries/
+*DerivedDataCache/
+*Intermediate/
+*Saved/
+*Build/
+*StarterContent/
+
+# GreyMatter specific ignores
 */GreyMatter/Content/KiteDemo/
 
 # Visual Studio solutions
