@@ -1,5 +1,22 @@
-StarterContent
-Saved
-Intermediate
-Binaries
-Build
+# UE4 Project directories to ignore
+*/GreyMatter/Binaries/
+*/GreyMatter/DerivedDataCache/
+*/GreyMatter/Intermediate/
+*/GreyMatter/Saved/
+*/GreyMatter/Build/
+*/GreyMatter/Content/StarterContent/
+
+# Visual Studio solutions
+*.sln
+*.sdf
+*.opensdf
+*.suo
+
+# Linux Project files
+*.pro
+*.kdev4
+CMakeLists.txt
+Makefile
+
+# Xcode Project files
+*.xcodeproj
