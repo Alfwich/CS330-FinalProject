@@ -203,6 +203,9 @@ void AGreyMatterPawn::Tick(float Delta)
         HeadRotation.Pitch += InputComponent->GetAxisValue(LookUpBinding);
         HeadRotation.Yaw += InputComponent->GetAxisValue(LookRightBinding);
         SpringArm->RelativeRotation = HeadRotation;
+        for(TObjectIterator<UStaticMeshComponent> cmp; cmp; ++cmp) {
+            //if(cmp)
+        }
 	}
 }
 
