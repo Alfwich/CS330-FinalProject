@@ -116,9 +116,9 @@ void AGreyMatterPawn::SetupPlayerInputComponent(class UInputComponent* InputComp
 
 	InputComponent->BindAction("Handbrake", IE_Pressed, this, &AGreyMatterPawn::OnHandbrakePressed);
 	InputComponent->BindAction("Handbrake", IE_Released, this, &AGreyMatterPawn::OnHandbrakeReleased);
-	InputComponent->BindAction("SwitchCamera", IE_Pressed, this, &AGreyMatterPawn::OnToggleCamera);
+	//InputComponent->BindAction("SwitchCamera", IE_Pressed, this, &AGreyMatterPawn::OnToggleCamera);
 
-	InputComponent->BindAction("ResetVR", IE_Pressed, this, &AGreyMatterPawn::OnResetVR); 
+	//InputComponent->BindAction("ResetVR", IE_Pressed, this, &AGreyMatterPawn::OnResetVR);
 }
 
 void AGreyMatterPawn::MoveForward(float Val)
@@ -148,6 +148,7 @@ void AGreyMatterPawn::OnToggleCamera()
 
 void AGreyMatterPawn::EnableIncarView(const bool bState, const bool bForce)
 {
+    /*
 	if ((bState != bInCarCameraActive) || ( bForce == true ))
 	{
 		bInCarCameraActive = bState;
@@ -173,6 +174,7 @@ void AGreyMatterPawn::EnableIncarView(const bool bState, const bool bForce)
 		InCarSpeed->SetVisibility(bInCarCameraActive);
 		InCarGear->SetVisibility(bInCarCameraActive);
 	}
+     */
 }
 
 
@@ -196,13 +198,11 @@ void AGreyMatterPawn::Tick(float Delta)
 #endif // HMD_INTGERATION
 	if (bHMDActive == false)
 	{
-		if ( (InputComponent) && (bInCarCameraActive == true ))
-		{
-			FRotator HeadRotation = InternalCamera->RelativeRotation;
-			HeadRotation.Pitch += InputComponent->GetAxisValue(LookUpBinding);
-			HeadRotation.Yaw += InputComponent->GetAxisValue(LookRightBinding);
-			InternalCamera->RelativeRotation = HeadRotation;
-		}
+        
+        FRotator HeadRotation = SpringArm->RelativeRotation;// InternalCamera->RelativeRotation;
+        HeadRotation.Pitch += InputComponent->GetAxisValue(LookUpBinding);
+        HeadRotation.Yaw += InputComponent->GetAxisValue(LookRightBinding);
+        SpringArm->RelativeRotation = HeadRotation;
 	}
 }
 
