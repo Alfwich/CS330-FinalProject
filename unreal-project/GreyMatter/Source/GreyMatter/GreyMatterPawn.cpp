@@ -148,33 +148,6 @@ void AGreyMatterPawn::OnToggleCamera()
 
 void AGreyMatterPawn::EnableIncarView(const bool bState, const bool bForce)
 {
-    /*
-	if ((bState != bInCarCameraActive) || ( bForce == true ))
-	{
-		bInCarCameraActive = bState;
-		
-		if (bState == true)
-		{
-			OnResetVR();
-			Camera->Deactivate();
-			InternalCamera->Activate();
-			
-			APlayerController* PlayerController = Cast<APlayerController>(GetController());
-			if ( (PlayerController != nullptr) && (PlayerController->PlayerCameraManager != nullptr ) )
-			{
-				PlayerController->PlayerCameraManager->bFollowHmdOrientation = true;
-			}
-		}
-		else
-		{
-			InternalCamera->Deactivate();
-			Camera->Activate();
-		}
-		
-		InCarSpeed->SetVisibility(bInCarCameraActive);
-		InCarGear->SetVisibility(bInCarCameraActive);
-	}
-     */
 }
 
 
@@ -204,7 +177,12 @@ void AGreyMatterPawn::Tick(float Delta)
         HeadRotation.Yaw += InputComponent->GetAxisValue(LookRightBinding);
         SpringArm->RelativeRotation = HeadRotation;
         for(TObjectIterator<UStaticMeshComponent> cmp; cmp; ++cmp) {
-            //if(cmp)
+            if(cmp->ComponentHasTag(FName("CannonRoot"))) {
+                cmp->RelativeRotation = HeadRotation;
+                // Find the turret component
+                // Set the rotation to the spring arm
+                //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Turret Found")));
+            }
         }
 	}
 }
