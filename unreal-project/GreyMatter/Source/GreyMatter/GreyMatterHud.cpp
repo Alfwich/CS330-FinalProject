@@ -57,6 +57,9 @@ void AGreyMatterHud::DrawHUD()
 
 			// Gear
 			FCanvasTextItem GearTextItem(FVector2D(HUDXRatio * 805.f, HUDYRatio * 500.f), Vehicle->GearDisplayString, HUDFont, Vehicle->bInReverseGear == false ? Vehicle->GearDisplayColor : Vehicle->GearDisplayReverseColor);
+            
+            
+            
 			GearTextItem.Scale = ScaleVec;
 			Canvas->DrawItem(GearTextItem);
 		}
