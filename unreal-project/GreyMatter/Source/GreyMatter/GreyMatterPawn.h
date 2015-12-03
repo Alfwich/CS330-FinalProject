@@ -32,6 +32,8 @@ class AGreyMatterPawn : public AWheeledVehicle
 	UPROPERTY(Category = Display, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UTextRenderComponent* InCarGear;
 
+	UStaticMeshComponent *turretCmp;
+
 public:
 	AGreyMatterPawn();
 
@@ -88,11 +90,17 @@ public:
 	/** Handle reset VR device */
 	void OnResetVR();
 
+	// Cannon shooting
+	void OnShootCannon();
+
+	// Setup cannon reference
+	void SetCannonRotation(FRotator rotation);
+
 	static const FName LookUpBinding;
 	static const FName LookRightBinding;
 
 private:
-	/** 
+	/**
 	 * Activate In-Car camera. Enable camera and sets visibility of incar hud display
 	 *
 	 * @param	bState true will enable in car view and set visibility of various if its doesnt match new state

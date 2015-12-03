@@ -23,8 +23,7 @@ const FName AGreyMatterPawn::LookRightBinding("LookRight");
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
 
-AGreyMatterPawn::AGreyMatterPawn()
-{
+AGreyMatterPawn::AGreyMatterPawn() {
 	// Car mesh
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CarMesh(TEXT("/Game/Vehicle/Sedan/Sedan_SkelMesh.Sedan_SkelMesh"));
 	GetMesh()->SetSkeletalMesh(CarMesh.Object);
@@ -64,13 +63,13 @@ AGreyMatterPawn::AGreyMatterPawn()
 	SpringArm->bInheritPitch = false;
 	SpringArm->bInheritRoll = false;
 
-	// Create camera component 
+	// Create camera component
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
 	Camera->AttachTo(SpringArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation = false;
 	Camera->FieldOfView = 90.f;
 
-	// Create In-Car camera component 
+	/* Create In-Car camera component
 	InternalCameraOrigin = FVector(8.0f, -40.0f, 130.0f);
 	InternalCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("InternalCamera"));
 	InternalCamera->AttachTo(SpringArm, USpringArmComponent::SocketName);
@@ -78,6 +77,7 @@ AGreyMatterPawn::AGreyMatterPawn()
 	InternalCamera->FieldOfView = 90.f;
 	InternalCamera->SetRelativeLocation(InternalCameraOrigin);
 	InternalCamera->AttachTo(GetMesh());
+	*/
 
 	// Create text render component for in car speed display
 	InCarSpeed = CreateDefaultSubobject<UTextRenderComponent>(TEXT("IncarSpeed"));
@@ -88,11 +88,11 @@ AGreyMatterPawn::AGreyMatterPawn()
 
 	// Create text render component for in car gear display
 	InCarGear = CreateDefaultSubobject<UTextRenderComponent>(TEXT("IncarGear"));
-	InCarGear->SetRelativeLocation(FVector(66.0f, -9.0f, 95.0f));	
+	InCarGear->SetRelativeLocation(FVector(66.0f, -9.0f, 95.0f));
 	InCarGear->SetRelativeRotation(FRotator(25.0f, 180.0f,0.0f));
 	InCarGear->SetRelativeScale3D(FVector(1.0f, 0.4f, 0.4f));
 	InCarGear->AttachTo(GetMesh());
-	
+
 	// Colors for the incar gear display. One for normal one for reverse
 	GearDisplayReverseColor = FColor(255, 0, 0, 255);
 	GearDisplayColor = FColor(255, 255, 255, 255);
@@ -104,8 +104,7 @@ AGreyMatterPawn::AGreyMatterPawn()
 	bInReverseGear = false;
 }
 
-void AGreyMatterPawn::SetupPlayerInputComponent(class UInputComponent* InputComponent)
-{
+void AGreyMatterPawn::SetupPlayerInputComponent(class UInputComponent* InputComponent) {
 	// set up gameplay key bindings
 	check(InputComponent);
 
@@ -114,108 +113,88 @@ void AGreyMatterPawn::SetupPlayerInputComponent(class UInputComponent* InputComp
 	InputComponent->BindAxis("LookUp");
 	InputComponent->BindAxis("LookRight");
 
-	InputComponent->BindAction("Handbrake", IE_Pressed, this, &AGreyMatterPawn::OnHandbrakePressed);
-	InputComponent->BindAction("Handbrake", IE_Released, this, &AGreyMatterPawn::OnHandbrakeReleased);
+	InputComponent->BindAction("ShootCannon", IE_Pressed, this, &AGreyMatterPawn::OnShootCannon);
+	//InputComponent->BindAction("Handbrake", IE_Pressed, this, &AGreyMatterPawn::OnHandbrakePressed);
+	//InputComponent->BindAction("Handbrake", IE_Released, this, &AGreyMatterPawn::OnHandbrakeReleased);
 	//InputComponent->BindAction("SwitchCamera", IE_Pressed, this, &AGreyMatterPawn::OnToggleCamera);
 
 	//InputComponent->BindAction("ResetVR", IE_Pressed, this, &AGreyMatterPawn::OnResetVR);
 }
 
-void AGreyMatterPawn::MoveForward(float Val)
-{
+void AGreyMatterPawn::MoveForward(float Val) {
 	GetVehicleMovementComponent()->SetThrottleInput(Val);
 }
 
-void AGreyMatterPawn::MoveRight(float Val)
-{
+void AGreyMatterPawn::MoveRight(float Val) {
 	GetVehicleMovementComponent()->SetSteeringInput(Val);
 }
 
-void AGreyMatterPawn::OnHandbrakePressed()
-{
-	GetVehicleMovementComponent()->SetHandbrakeInput(true);
+void AGreyMatterPawn::OnShootCannon() {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Shoot Projectile")));
 }
 
-void AGreyMatterPawn::OnHandbrakeReleased()
-{
-	GetVehicleMovementComponent()->SetHandbrakeInput(false);
+void AGreyMatterPawn::OnHandbrakePressed() {
+	//GetVehicleMovementComponent()->SetHandbrakeInput(true);
 }
 
-void AGreyMatterPawn::OnToggleCamera()
-{
-	EnableIncarView(!bInCarCameraActive);
+void AGreyMatterPawn::OnHandbrakeReleased() {
+	//GetVehicleMovementComponent()->SetHandbrakeInput(false);
 }
 
-void AGreyMatterPawn::EnableIncarView(const bool bState, const bool bForce)
-{
+void AGreyMatterPawn::OnToggleCamera() {
+	//EnableIncarView(!bInCarCameraActive);
+}
+
+void AGreyMatterPawn::EnableIncarView(const bool bState, const bool bForce) {
 }
 
 
-void AGreyMatterPawn::Tick(float Delta)
-{
+void AGreyMatterPawn::Tick(float Delta) {
 	// Setup the flag to say we are in reverse gear
 	bInReverseGear = GetVehicleMovement()->GetCurrentGear() < 0;
-	
+
 	// Update the strings used in the hud (incar and onscreen)
 	UpdateHUDStrings();
 
 	// Set the string in the incar hud
 	SetupInCarHUD();
 
-	bool bHMDActive = false;
-#ifdef HMD_INTGERATION
-	if ((GEngine->HMDDevice.IsValid() == true) && ((GEngine->HMDDevice->IsHeadTrackingAllowed() == true) || (GEngine->IsStereoscopic3D() == true)))
-	{
-		bHMDActive = true;
-	}
-#endif // HMD_INTGERATION
-	if (bHMDActive == false)
-	{
-        
-        FRotator HeadRotation = SpringArm->RelativeRotation;// InternalCamera->RelativeRotation;
-        HeadRotation.Pitch += InputComponent->GetAxisValue(LookUpBinding);
-        HeadRotation.Yaw += InputComponent->GetAxisValue(LookRightBinding);
-        SpringArm->RelativeRotation = HeadRotation;
-        for(TObjectIterator<UStaticMeshComponent> cmp; cmp; ++cmp) {
-            if(cmp->ComponentHasTag(FName("CannonRoot"))) {
-                cmp->RelativeRotation = HeadRotation;
-                // Find the turret component
-                // Set the rotation to the spring arm
-                //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Turret Found")));
-            }
-        }
+	// Update the behind camera rotation
+  FRotator HeadRotation = SpringArm->RelativeRotation;
+  HeadRotation.Pitch += InputComponent->GetAxisValue(LookUpBinding);
+  HeadRotation.Yaw += InputComponent->GetAxisValue(LookRightBinding);
+	SpringArm->RelativeRotation = HeadRotation;
+
+	SetCannonRotation(HeadRotation);
+
+}
+
+void AGreyMatterPawn::SetCannonRotation(FRotator rotation) {
+	// Add incline to the rotator
+	rotation.Pitch += 35.0f;
+
+	// Get a reference to the turret component
+	for(TObjectIterator<UStaticMeshComponent> cmp; cmp; ++cmp) {
+			if(cmp->ComponentHasTag(FName("CannonRoot"))) {
+				cmp->RelativeRotation = rotation;
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set rotation for turret")));
+			}
 	}
 }
 
-void AGreyMatterPawn::BeginPlay()
-{
-	bool bEnableInCar = false;
-#ifdef HMD_INTGERATION
-	bEnableInCar = GEngine->HMDDevice.IsValid();	
-#endif // HMD_INTGERATION
-	EnableIncarView(bEnableInCar,true);
+void AGreyMatterPawn::BeginPlay() {
 }
 
-void AGreyMatterPawn::OnResetVR()
-{
-#ifdef HMD_INTGERATION
-	if (GEngine->HMDDevice.IsValid())
-	{
-		GEngine->HMDDevice->ResetOrientationAndPosition();
-		InternalCamera->SetRelativeLocation(InternalCameraOrigin);
-		GetController()->SetControlRotation(FRotator());
-	}
-#endif // HMD_INTGERATION
+void AGreyMatterPawn::OnResetVR() {
 }
 
-void AGreyMatterPawn::UpdateHUDStrings()
-{
+void AGreyMatterPawn::UpdateHUDStrings() {
 	float KPH = FMath::Abs(GetVehicleMovement()->GetForwardSpeed()) * 0.036f;
 	int32 KPH_int = FMath::FloorToInt(KPH);
 
 	// Using FText because this is display text that should be localizable
 	SpeedDisplayString = FText::Format(LOCTEXT("SpeedFormat", "{0} km/h"), FText::AsNumber(KPH_int));
-	
+
 	if (bInReverseGear == true)
 	{
 		GearDisplayString = FText(LOCTEXT("ReverseGear", "R"));
@@ -224,18 +203,17 @@ void AGreyMatterPawn::UpdateHUDStrings()
 	{
 		int32 Gear = GetVehicleMovement()->GetCurrentGear();
 		GearDisplayString = (Gear == 0) ? LOCTEXT("N", "N") : FText::AsNumber(Gear);
-	}	
+	}
 }
 
-void AGreyMatterPawn::SetupInCarHUD()
-{
+void AGreyMatterPawn::SetupInCarHUD() {
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if ((PlayerController != nullptr) && (InCarSpeed != nullptr) && (InCarGear != nullptr) )
 	{
 		// Setup the text render component strings
 		InCarSpeed->SetText(SpeedDisplayString);
 		InCarGear->SetText(GearDisplayString);
-		
+
 		if (bInReverseGear == false)
 		{
 			InCarGear->SetTextRenderColor(GearDisplayColor);
