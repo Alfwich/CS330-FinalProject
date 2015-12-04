@@ -99,7 +99,7 @@ AGreyMatterPawn::AGreyMatterPawn() {
 	turretBaseCmp = NULL;
 	turretBarrelFacingCmp = NULL;
 
-	cannonPitchOffset = 35.0f;
+	cannonPitchOffset = 25.0f;
 }
 
 void AGreyMatterPawn::SetupPlayerInputComponent(class UInputComponent* InputComponent) {
