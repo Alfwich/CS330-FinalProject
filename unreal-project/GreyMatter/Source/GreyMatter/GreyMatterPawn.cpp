@@ -94,6 +94,7 @@ AGreyMatterPawn::AGreyMatterPawn() {
 	GearDisplayColor = FColor(255, 255, 255, 255);
 
 	bInReverseGear = false;
+	controlsAreEnabled = true;
 
 	turretBaseCmp = NULL;
 	turretBarrelFacingCmp = NULL;
@@ -114,14 +115,19 @@ void AGreyMatterPawn::SetupPlayerInputComponent(class UInputComponent* InputComp
 }
 
 void AGreyMatterPawn::MoveForward(float Val) {
-	GetVehicleMovementComponent()->SetThrottleInput(Val);
+	if(controlsAreEnabled) {
+		GetVehicleMovementComponent()->SetThrottleInput(Val);
+	}
 }
 
 void AGreyMatterPawn::MoveRight(float Val) {
-	GetVehicleMovementComponent()->SetSteeringInput(Val);
+	if(controlsAreEnabled) {
+		GetVehicleMovementComponent()->SetSteeringInput(Val);
+	}
 }
 
 void AGreyMatterPawn::OnShootCannon() {
+	if(controlsAreEnabled) {
 		UWorld* const World = GetWorld();
 		if(World && turretBarrelFacingCmp) {
 			AGreyMatterGameMode *gameMode = Cast<AGreyMatterGameMode>(World->GetAuthGameMode());
@@ -133,6 +139,7 @@ void AGreyMatterPawn::OnShootCannon() {
 				FVector projectileDirection = turretBarrelFacingCmp->GetForwardVector();
 				projectile->ImpulseProjectileOnVector(projectileDirection, 3000.0f);
 			}
+		}
 	}
 }
 
@@ -150,22 +157,28 @@ void AGreyMatterPawn::EnableIncarView(const bool bState, const bool bForce) {
 
 
 void AGreyMatterPawn::Tick(float Delta) {
-	// Setup the flag to say we are in reverse gear
-	bInReverseGear = GetVehicleMovement()->GetCurrentGear() < 0;
+	AGreyMatterGameMode *gameMode = Cast<AGreyMatterGameMode>(GetWorld()->GetAuthGameMode());
+	if(gameMode->getTimeLeft() > 0) {
+		// Setup the flag to say we are in reverse gear
+		bInReverseGear = GetVehicleMovement()->GetCurrentGear() < 0;
 
-	// Update the strings used in the hud (incar and onscreen)
-	UpdateHUDStrings();
+		// Update the strings used in the hud (incar and onscreen)
+		UpdateHUDStrings();
 
-	// Set the string in the incar hud
-	SetupInCarHUD();
+		// Set the string in the incar hud
+		SetupInCarHUD();
 
-	// Update the behind camera rotation
-  FRotator HeadRotation = SpringArm->RelativeRotation;
-  HeadRotation.Pitch += InputComponent->GetAxisValue(LookUpBinding);
-  HeadRotation.Yaw += InputComponent->GetAxisValue(LookRightBinding);
-	SpringArm->RelativeRotation = HeadRotation;
-	SetCannonRotation(HeadRotation);
-
+		// Update the behind camera rotation
+	  FRotator HeadRotation = SpringArm->RelativeRotation;
+	  HeadRotation.Pitch += InputComponent->GetAxisValue(LookUpBinding);
+	  HeadRotation.Yaw += InputComponent->GetAxisValue(LookRightBinding);
+		SpringArm->RelativeRotation = HeadRotation;
+		SetCannonRotation(HeadRotation);
+	} else if(controlsAreEnabled) {
+		controlsAreEnabled = false;
+		GetVehicleMovementComponent()->SetThrottleInput(0.0f);
+		GetVehicleMovementComponent()->SetSteeringInput(0.0f);
+	}
 }
 
 void AGreyMatterPawn::SetCannonRotation(FRotator rotation) {

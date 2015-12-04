@@ -34,6 +34,7 @@ class AGreyMatterPawn : public AWheeledVehicle
 
 	UStaticMeshComponent *turretBaseCmp;
 	UArrowComponent      *turretBarrelFacingCmp;
+	bool controlsAreEnabled;
 
 public:
 	AGreyMatterPawn();

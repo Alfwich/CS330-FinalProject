@@ -10,7 +10,7 @@ class AGreyMatterGameMode : public AGameMode
 	GENERATED_BODY()
 
 	float playerAmmo;
-	float remainingTime;
+	int32 remainingTime;
 	float score;
 
 public:
