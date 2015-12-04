@@ -137,7 +137,7 @@ void AGreyMatterPawn::OnShootCannon() {
 				ACannonProjectile* projectile = World->SpawnActor<ACannonProjectile>(projectileLocation, FRotator::ZeroRotator);
 
 				FVector projectileDirection = turretBarrelFacingCmp->GetForwardVector();
-				projectile->ImpulseProjectileOnVector(projectileDirection, 3000.0f);
+				projectile->ImpulseProjectileOnVector(projectileDirection, 3000.0f + GetVehicleMovement()->GetForwardSpeed());
 			}
 		}
 	}
