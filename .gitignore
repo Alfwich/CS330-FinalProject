@@ -10,10 +10,10 @@
 */GreyMatter/Content/KiteDemo/
 
 # Visual Studio solutions
-*.sln
+*.sln*
 *.sdf
 *.opensdf
-*.suo
+*.suo*
 
 # Linux Project files
 *.pro

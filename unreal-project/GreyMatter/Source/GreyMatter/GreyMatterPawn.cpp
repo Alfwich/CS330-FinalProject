@@ -177,7 +177,7 @@ void AGreyMatterPawn::SetCannonRotation(FRotator rotation) {
 
 void AGreyMatterPawn::SetupCannonReferences() {
 		const TArray<UActorComponent*> comps = GetComponents();
-		for(int i = 0; (i < comps.Num()) || (!turretBaseCmp && !turretBarrelFacingCmp); ++i) {
+		for(int i = 0; i < comps.Num(); ++i) {
 			UActorComponent *cmp = comps[i];
 			if(cmp->ComponentHasTag(FName("CannonRoot"))) {
 				turretBaseCmp = Cast<UStaticMeshComponent>(cmp);
