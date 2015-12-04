@@ -32,7 +32,8 @@ class AGreyMatterPawn : public AWheeledVehicle
 	UPROPERTY(Category = Display, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UTextRenderComponent* InCarGear;
 
-	UStaticMeshComponent *turretCmp;
+	UStaticMeshComponent *turretBaseCmp;
+	UArrowComponent      *turretBarrelFacingCmp;
 
 public:
 	AGreyMatterPawn();
@@ -60,6 +61,9 @@ public:
 	/** Are we in reverse gear */
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly)
 	bool bInReverseGear;
+
+	UPROPERTY(EditAnywhere, Category="Cannon")
+	float cannonPitchOffset;
 
 	/** Initial offset of incar camera */
 	FVector InternalCameraOrigin;
@@ -92,6 +96,8 @@ public:
 
 	// Cannon shooting
 	void OnShootCannon();
+
+	void SetupCannonReferences();
 
 	// Setup cannon reference
 	void SetCannonRotation(FRotator rotation);

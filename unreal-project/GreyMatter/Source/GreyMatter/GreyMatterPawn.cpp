@@ -1,6 +1,7 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 
 #include "GreyMatter.h"
+#include "GreyMatterGameMode.h"
 #include "GreyMatterPawn.h"
 #include "GreyMatterWheelFront.h"
 #include "GreyMatterWheelRear.h"
@@ -12,6 +13,7 @@
 #include "Vehicles/WheeledVehicleMovementComponent4W.h"
 #include "Engine/SkeletalMesh.h"
 #include "Engine.h"
+#include "CannonProjectile.h"
 
 #ifdef HMD_INTGERATION
 // Needed for VR Headset
@@ -69,16 +71,6 @@ AGreyMatterPawn::AGreyMatterPawn() {
 	Camera->bUsePawnControlRotation = false;
 	Camera->FieldOfView = 90.f;
 
-	/* Create In-Car camera component
-	InternalCameraOrigin = FVector(8.0f, -40.0f, 130.0f);
-	InternalCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("InternalCamera"));
-	InternalCamera->AttachTo(SpringArm, USpringArmComponent::SocketName);
-	InternalCamera->bUsePawnControlRotation = false;
-	InternalCamera->FieldOfView = 90.f;
-	InternalCamera->SetRelativeLocation(InternalCameraOrigin);
-	InternalCamera->AttachTo(GetMesh());
-	*/
-
 	// Create text render component for in car speed display
 	InCarSpeed = CreateDefaultSubobject<UTextRenderComponent>(TEXT("IncarSpeed"));
 	InCarSpeed->SetRelativeLocation(FVector(70.0f, -75.0f, 99.0f));
@@ -102,6 +94,11 @@ AGreyMatterPawn::AGreyMatterPawn() {
 	GearDisplayColor = FColor(255, 255, 255, 255);
 
 	bInReverseGear = false;
+
+	turretBaseCmp = NULL;
+	turretBarrelFacingCmp = NULL;
+
+	cannonPitchOffset = 35.0f;
 }
 
 void AGreyMatterPawn::SetupPlayerInputComponent(class UInputComponent* InputComponent) {
@@ -114,11 +111,6 @@ void AGreyMatterPawn::SetupPlayerInputComponent(class UInputComponent* InputComp
 	InputComponent->BindAxis("LookRight");
 
 	InputComponent->BindAction("ShootCannon", IE_Pressed, this, &AGreyMatterPawn::OnShootCannon);
-	//InputComponent->BindAction("Handbrake", IE_Pressed, this, &AGreyMatterPawn::OnHandbrakePressed);
-	//InputComponent->BindAction("Handbrake", IE_Released, this, &AGreyMatterPawn::OnHandbrakeReleased);
-	//InputComponent->BindAction("SwitchCamera", IE_Pressed, this, &AGreyMatterPawn::OnToggleCamera);
-
-	//InputComponent->BindAction("ResetVR", IE_Pressed, this, &AGreyMatterPawn::OnResetVR);
 }
 
 void AGreyMatterPawn::MoveForward(float Val) {
@@ -130,19 +122,27 @@ void AGreyMatterPawn::MoveRight(float Val) {
 }
 
 void AGreyMatterPawn::OnShootCannon() {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Shoot Projectile")));
+		UWorld* const World = GetWorld();
+		if(World && turretBarrelFacingCmp) {
+			AGreyMatterGameMode *gameMode = Cast<AGreyMatterGameMode>(World->GetAuthGameMode());
+			if(gameMode->getAmmoCapacity() > 0.0f) {
+				gameMode->alterAmmoCapacity(-1.0);
+				FVector projectileLocation = turretBarrelFacingCmp->GetComponentLocation();
+				ACannonProjectile* projectile = World->SpawnActor<ACannonProjectile>(projectileLocation, FRotator::ZeroRotator);
+
+				FVector projectileDirection = turretBarrelFacingCmp->GetForwardVector();
+				projectile->ImpulseProjectileOnVector(projectileDirection, 3000.0f);
+			}
+	}
 }
 
 void AGreyMatterPawn::OnHandbrakePressed() {
-	//GetVehicleMovementComponent()->SetHandbrakeInput(true);
 }
 
 void AGreyMatterPawn::OnHandbrakeReleased() {
-	//GetVehicleMovementComponent()->SetHandbrakeInput(false);
 }
 
 void AGreyMatterPawn::OnToggleCamera() {
-	//EnableIncarView(!bInCarCameraActive);
 }
 
 void AGreyMatterPawn::EnableIncarView(const bool bState, const bool bForce) {
@@ -164,25 +164,35 @@ void AGreyMatterPawn::Tick(float Delta) {
   HeadRotation.Pitch += InputComponent->GetAxisValue(LookUpBinding);
   HeadRotation.Yaw += InputComponent->GetAxisValue(LookRightBinding);
 	SpringArm->RelativeRotation = HeadRotation;
-
 	SetCannonRotation(HeadRotation);
 
 }
 
 void AGreyMatterPawn::SetCannonRotation(FRotator rotation) {
-	// Add incline to the rotator
-	rotation.Pitch += 35.0f;
-
-	// Get a reference to the turret component
-	for(TObjectIterator<UStaticMeshComponent> cmp; cmp; ++cmp) {
-			if(cmp->ComponentHasTag(FName("CannonRoot"))) {
-				cmp->RelativeRotation = rotation;
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Set rotation for turret")));
-			}
+	if(turretBaseCmp) {
+		rotation.Pitch += cannonPitchOffset;
+		turretBaseCmp->RelativeRotation = rotation;
 	}
 }
 
+void AGreyMatterPawn::SetupCannonReferences() {
+		const TArray<UActorComponent*> comps = GetComponents();
+		for(int i = 0; (i < comps.Num()) || (!turretBaseCmp && !turretBarrelFacingCmp); ++i) {
+			UActorComponent *cmp = comps[i];
+			if(cmp->ComponentHasTag(FName("CannonRoot"))) {
+				turretBaseCmp = Cast<UStaticMeshComponent>(cmp);
+				continue;
+			}
+
+			if(cmp->ComponentHasTag(FName("CannonProjectileStart"))) {
+				turretBarrelFacingCmp = Cast<UArrowComponent>(cmp);
+				continue;
+			}
+		}
+}
+
 void AGreyMatterPawn::BeginPlay() {
+	SetupCannonReferences();
 }
 
 void AGreyMatterPawn::OnResetVR() {

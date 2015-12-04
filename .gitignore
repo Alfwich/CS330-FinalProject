@@ -23,3 +23,6 @@ Makefile
 
 # Xcode Project files
 *.xcodeproj
+
+# Thanks Apple
+*.DS_Store
