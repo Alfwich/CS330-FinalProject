@@ -137,7 +137,7 @@ void AGreyMatterPawn::OnShootCannon() {
 				ACannonProjectile* projectile = World->SpawnActor<ACannonProjectile>(projectileLocation, FRotator::ZeroRotator);
 
 				FVector projectileDirection = turretBarrelFacingCmp->GetForwardVector();
-				projectile->ImpulseProjectileOnVector(projectileDirection, 3000.0f + GetVehicleMovement()->GetForwardSpeed());
+				projectile->ImpulseProjectileOnVector(projectileDirection, 5000.0f + GetVehicleMovement()->GetForwardSpeed());
 			}
 		}
 	}
@@ -179,6 +179,7 @@ void AGreyMatterPawn::Tick(float Delta) {
 		GetVehicleMovementComponent()->SetThrottleInput(0.0f);
 		GetVehicleMovementComponent()->SetSteeringInput(0.0f);
 	}
+	SpringArm->TargetArmLength = FMath::Clamp( 600.0f + (GetVehicleMovement()->GetForwardSpeed()/6.0f), 600.0f, 2000.0f);
 }
 
 void AGreyMatterPawn::SetCannonRotation(FRotator rotation) {

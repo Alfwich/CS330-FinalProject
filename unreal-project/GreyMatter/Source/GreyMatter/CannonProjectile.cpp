@@ -16,7 +16,7 @@ ACannonProjectile::ACannonProjectile()
 
 	if (SphereVisualAsset.Succeeded()) {
 			ourVisualComponent->SetStaticMesh(SphereVisualAsset.Object);
-			ourVisualComponent->SetWorldScale3D(FVector(0.2f));
+			ourVisualComponent->SetWorldScale3D(FVector(1.0f));
 			UMaterial* material = LoadObjFromPath<UMaterial>("/Game/StarterContent/Materials/M_Metal_Rust.M_Metal_Rust");
 			if(material) {
 				ourVisualComponent->SetMaterial(0, material);
