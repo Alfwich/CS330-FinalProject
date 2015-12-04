@@ -35,6 +35,7 @@ float AGreyMatterGameMode::getScore() {
 
 void AGreyMatterGameMode::alterScore(float delta) {
 	score += delta;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("New Score: %f"), score));
 }
 
 void AGreyMatterGameMode::BeginPlay() {

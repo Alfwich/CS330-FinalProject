@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "GreyMatter.h"
 #include "DestroyableTarget.generated.h"
 
 UCLASS()
@@ -20,12 +21,19 @@ public:
 	UPROPERTY(EditAnywhere, Category="Mesh")
 	UMaterial* ourVisualComponentMaterial;
 
+	UPROPERTY(EditAnywhere, Category="Scoring")
+	int32 totalHits;
+
+	UPROPERTY(EditAnywhere, Category="Scoring")
+	float scorePerHit;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-
+	UFUNCTION()
+  void OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 };

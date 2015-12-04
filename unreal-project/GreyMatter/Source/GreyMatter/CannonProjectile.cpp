@@ -22,6 +22,13 @@ ACannonProjectile::ACannonProjectile()
 	}
 
 	ourVisualComponent->SetSimulatePhysics(true);
+	ourVisualComponent->bGenerateOverlapEvents = true;
+	ourVisualComponent->ComponentTags.Add(FName("__CANNON_PROJECTILE__"));
+
+	// Set the mass of the projectile
+	FBodyInstance* BodyInst = ourVisualComponent->GetBodyInstance();
+	BodyInst->MassScale = 200.0f;
+	BodyInst->UpdateMassProperties();
 
 }
 
