@@ -37,7 +37,6 @@ ADestroyableTarget::ADestroyableTarget()
 void ADestroyableTarget::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 	if(OtherComp && OtherComp->ComponentHasTag(FName("__CANNON_PROJECTILE__"))) {
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Was Hit!")));
-		OtherComp->ComponentTags.Remove(FName("__CANNON_PROJECTILE__"));
 		AGreyMatterGameMode *gameMode = Cast<AGreyMatterGameMode>(GetWorld()->GetAuthGameMode());
 		if(gameMode && totalHits > 0) {
 			gameMode->alterScore(scorePerHit);
@@ -50,6 +49,10 @@ void ADestroyableTarget::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherCom
 // Called when the game starts or when spawned
 void ADestroyableTarget::BeginPlay() {
 	Super::BeginPlay();
+	AGreyMatterGameMode *gameMode = Cast<AGreyMatterGameMode>(GetWorld()->GetAuthGameMode());
+	if(gameMode) {
+		gameMode->addToMaxScore(totalHits*scorePerHit);
+	}
 }
 
 // Called every frame

@@ -12,6 +12,7 @@ class AGreyMatterGameMode : public AGameMode
 	float playerAmmo;
 	int32 remainingTime;
 	float score;
+	float maxScore;
 
 public:
 	AGreyMatterGameMode();
@@ -29,6 +30,8 @@ public:
 	// Score
 	float getScore();
 	void alterScore(float delta);
+	void addToMaxScore(float delta);
+	bool gameIsOver();
 
 	void tickRemaining();
 	void reset();
