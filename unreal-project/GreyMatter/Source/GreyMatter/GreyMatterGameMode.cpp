@@ -24,7 +24,7 @@ float AGreyMatterGameMode::getTimeLeft() {
 
 void AGreyMatterGameMode::reset() {
 	playerAmmo = 100.0f;
-	remainingTime = 10;//30;
+	remainingTime = 30;
 	score = 0.0f;
 }
 
