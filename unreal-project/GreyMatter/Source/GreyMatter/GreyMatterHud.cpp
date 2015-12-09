@@ -59,9 +59,22 @@ void AGreyMatterHud::DrawHUD()
 			FCanvasTextItem GearTextItem(FVector2D(HUDXRatio * 805.f, HUDYRatio * 500.f), Vehicle->GearDisplayString, HUDFont, Vehicle->bInReverseGear == false ? Vehicle->GearDisplayColor : Vehicle->GearDisplayReverseColor);
             
             
-            
 			GearTextItem.Scale = ScaleVec;
 			Canvas->DrawItem(GearTextItem);
+            
+            // BEGIN MY CODE
+            AGreyMatterGameMode *gameMode = Cast<AGreyMatterGame>(World->GetAuthGameMode());
+            
+            FCanvasTextItem AmmoItem(FVector2D(HUDXRatio * 805.f, HUDYRatio * 545.f), gameMode->getAmmoCapacity(), HUDFont, FLinearColor::Red);
+            AmmoItem.Scale = ScaleVec;
+            Canvas->DrawItem(AmmoItem);
+            
+            FCanvasTextItem TimeLeftItem(FVector2D(HUDXRatio * 200.f, HUDYRatio * 100.f), gameMode->getTimeLeft(), HUDFont, FLinearColor::White);
+            TimeLeftItem.Scale = ScaleVec;
+            Canvas->DrawItem(FCanvasTextItem);
+            // END MY CODE
+            
+
 		}
 	}
 }
