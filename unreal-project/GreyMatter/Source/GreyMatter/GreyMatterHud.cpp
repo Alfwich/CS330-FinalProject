@@ -3,6 +3,7 @@
 #include "GreyMatter.h"
 #include "GreyMatterHud.h"
 #include "GreyMatterPawn.h"
+#include "GreyMatterGameMode.h"
 #include "GameFramework/WheeledVehicle.h"
 #include "RenderResource.h"
 #include "Shader.h"
@@ -63,7 +64,8 @@ void AGreyMatterHud::DrawHUD()
 			Canvas->DrawItem(GearTextItem);
             
             // BEGIN MY CODE
-            AGreyMatterGameMode *gameMode = Cast<AGreyMatterGame>(World->GetAuthGameMode());
+/*
+            AGreyMatterGameMode *gameMode = Cast<AGreyMatterGameMode>(GetWorld()->GetAuthGameMode());
             
             FCanvasTextItem AmmoItem(FVector2D(HUDXRatio * 805.f, HUDYRatio * 545.f), gameMode->getAmmoCapacity(), HUDFont, FLinearColor::Red);
             AmmoItem.Scale = ScaleVec;
@@ -72,6 +74,7 @@ void AGreyMatterHud::DrawHUD()
             FCanvasTextItem TimeLeftItem(FVector2D(HUDXRatio * 200.f, HUDYRatio * 100.f), gameMode->getTimeLeft(), HUDFont, FLinearColor::White);
             TimeLeftItem.Scale = ScaleVec;
             Canvas->DrawItem(FCanvasTextItem);
+*/
             // END MY CODE
             
 
