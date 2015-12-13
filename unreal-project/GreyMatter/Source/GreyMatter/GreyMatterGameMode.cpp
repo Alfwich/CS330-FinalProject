@@ -38,7 +38,7 @@ void AGreyMatterGameMode::addToMaxScore(float delta) {
 
 void AGreyMatterGameMode::alterScore(float delta) {
 	score += delta;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("New Score: %f/%f"), score, maxScore));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("New Score: %f/%f"), score, maxScore));
 }
 
 void AGreyMatterGameMode::BeginPlay() {
@@ -59,14 +59,14 @@ void AGreyMatterGameMode::tickRemaining() {
 	if(remainingTime > 0) {
 		if(gameIsOver()) {
 			remainingTime = 0;
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Round over with total score of: %f, using %f ammo, for efficency:%f"), score, 100.0f-playerAmmo, score/(100.0f-playerAmmo)));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Round over with total score of: %f, using %f ammo, for efficency:%f"), score, 100.0f-playerAmmo, score/(100.0f-playerAmmo)));
 		} else if(((int32)remainingTime)%5 == 0) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Time Remaining: %d"), remainingTime));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Time Remaining: %d"), remainingTime));
 		}
 	} else if(remainingTime == 0) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Round over with total score of: %f, using %f ammo, for efficency:%f"), score, 100.0f-playerAmmo, score/(100.0f-playerAmmo)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Round over with total score of: %f, using %f ammo, for efficency:%f"), score, 100.0f-playerAmmo, score/(100.0f-playerAmmo)));
 	} else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Returning to main menu in: %d"), 5+remainingTime));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Returning to main menu in: %d"), 5+remainingTime));
 	}
 
 
