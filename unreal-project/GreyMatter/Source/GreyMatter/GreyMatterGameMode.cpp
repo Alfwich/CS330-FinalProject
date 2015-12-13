@@ -6,7 +6,6 @@
 #include "GreyMatterHud.h"
 
 AGreyMatterGameMode::AGreyMatterGameMode() {
-	//DefaultPawnClass = AGreyMatterPawn::StaticClass();
 	HUDClass = AGreyMatterHud::StaticClass();
 }
 
@@ -51,7 +50,7 @@ void AGreyMatterGameMode::BeginPlay() {
 }
 
 bool AGreyMatterGameMode::gameIsOver() {
-	return score == maxScore;
+	return score == maxScore || playerAmmo <= 0.0f;
 }
 
 void AGreyMatterGameMode::tickRemaining() {

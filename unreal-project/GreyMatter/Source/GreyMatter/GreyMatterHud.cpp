@@ -35,51 +35,35 @@ void AGreyMatterHud::DrawHUD()
 	const float HUDXRatio = Canvas->SizeX / 1280.f;
 	const float HUDYRatio = Canvas->SizeY / 720.f;
 
-	bool bWantHUD = true;
-#ifdef HMD_INTGERATION
-	if (GEngine->HMDDevice.IsValid() == true)
-	{
-		bWantHUD = GEngine->HMDDevice->IsStereoEnabled();
+	// Get our vehicle so we can check if we are in car. If we are we don't want onscreen HUD
+	FVector2D ScaleVec(HUDYRatio * 1.4f, HUDYRatio * 1.4f);
+
+  AGreyMatterGameMode *gameMode = Cast<AGreyMatterGameMode>(GetWorld()->GetAuthGameMode());
+
+	FCanvasTextItem ScoreTextItem(FVector2D(HUDXRatio * 805.0f, HUDYRatio * 455.0f), FText::Format(LOCTEXT("ScoreFormat", "Score: {0}"), FText::AsNumber(gameMode->getScore())), HUDFont, FLinearColor::White);
+	ScoreTextItem.Scale = ScaleVec;
+	Canvas->DrawItem(ScoreTextItem);
+
+	int32 ammoLeft = gameMode->getAmmoCapacity();
+	FLinearColor ammoColor = FLinearColor(0.5f, 0.5f, 0.5f, 1.0f);//(ammoLeft > 0) ? FLinearColor::White : FLinearColor::Red;
+	FCanvasTextItem AmmoTextItem(FVector2D(HUDXRatio * 805.0f, HUDYRatio * 500.0f), FText::Format(LOCTEXT("AmmoFormat", "Ammo: {0}"), FText::AsNumber(gameMode->getAmmoCapacity())), HUDFont, ammoColor);
+	AmmoTextItem.Scale = ScaleVec;
+	Canvas->DrawItem(AmmoTextItem);
+
+	int32 timeLeft = gameMode->getTimeLeft();
+	FLinearColor timeColor = (timeLeft> 20) ? FLinearColor::White : FLinearColor::Red;
+	FCanvasTextItem TimeLeftItem(FVector2D(HUDXRatio * 805.0f, HUDYRatio * 545.0f), FText::Format(LOCTEXT("TimeLeftFormat", "Time Left: {0}"), FText::AsNumber(timeLeft)), HUDFont, timeColor);
+	TimeLeftItem.Scale = ScaleVec;
+	Canvas->DrawItem(TimeLeftItem);
+
+	if(timeLeft >= 175) {
+		FText infoText = LOCTEXT("InfoText", "Shoot all the targets to win!");
+		FCanvasTextItem InfoTextItem(FVector2D(HUDXRatio * (Canvas->SizeY/2.0f), HUDYRatio * 200.0f), infoText, HUDFont, FLinearColor::White);
+		InfoTextItem.Scale = ScaleVec;
+		Canvas->DrawItem(InfoTextItem);
+
 	}
-#endif// HMD_INTGERATION
-	// We dont want the onscreen hud when using a HMD device	
-	if (bWantHUD == true)
-	{
-		// Get our vehicle so we can check if we are in car. If we are we don't want onscreen HUD
-		AGreyMatterPawn* Vehicle = Cast<AGreyMatterPawn>(GetOwningPawn());
-		if ((Vehicle != nullptr) && (Vehicle->bInCarCameraActive == false))
-		{
-			FVector2D ScaleVec(HUDYRatio * 1.4f, HUDYRatio * 1.4f);
 
-			// Speed
-			FCanvasTextItem SpeedTextItem(FVector2D(HUDXRatio * 805.f, HUDYRatio * 455), Vehicle->SpeedDisplayString, HUDFont, FLinearColor::White);
-			SpeedTextItem.Scale = ScaleVec;
-			Canvas->DrawItem(SpeedTextItem);
-
-			// Gear
-			FCanvasTextItem GearTextItem(FVector2D(HUDXRatio * 805.f, HUDYRatio * 500.f), Vehicle->GearDisplayString, HUDFont, Vehicle->bInReverseGear == false ? Vehicle->GearDisplayColor : Vehicle->GearDisplayReverseColor);
-            
-            
-			GearTextItem.Scale = ScaleVec;
-			Canvas->DrawItem(GearTextItem);
-            
-            // BEGIN MY CODE
-/*
-            AGreyMatterGameMode *gameMode = Cast<AGreyMatterGameMode>(GetWorld()->GetAuthGameMode());
-            
-            FCanvasTextItem AmmoItem(FVector2D(HUDXRatio * 805.f, HUDYRatio * 545.f), gameMode->getAmmoCapacity(), HUDFont, FLinearColor::Red);
-            AmmoItem.Scale = ScaleVec;
-            Canvas->DrawItem(AmmoItem);
-            
-            FCanvasTextItem TimeLeftItem(FVector2D(HUDXRatio * 200.f, HUDYRatio * 100.f), gameMode->getTimeLeft(), HUDFont, FLinearColor::White);
-            TimeLeftItem.Scale = ScaleVec;
-            Canvas->DrawItem(FCanvasTextItem);
-*/
-            // END MY CODE
-            
-
-		}
-	}
 }
 
 

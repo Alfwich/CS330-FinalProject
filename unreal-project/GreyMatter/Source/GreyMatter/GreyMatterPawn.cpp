@@ -214,6 +214,7 @@ void AGreyMatterPawn::OnResetVR() {
 }
 
 void AGreyMatterPawn::UpdateHUDStrings() {
+	/*
 	float KPH = FMath::Abs(GetVehicleMovement()->GetForwardSpeed()) * 0.036f;
 	int32 KPH_int = FMath::FloorToInt(KPH);
 
@@ -229,6 +230,7 @@ void AGreyMatterPawn::UpdateHUDStrings() {
 		int32 Gear = GetVehicleMovement()->GetCurrentGear();
 		GearDisplayString = (Gear == 0) ? LOCTEXT("N", "N") : FText::AsNumber(Gear);
 	}
+	*/
 }
 
 void AGreyMatterPawn::SetupInCarHUD() {
