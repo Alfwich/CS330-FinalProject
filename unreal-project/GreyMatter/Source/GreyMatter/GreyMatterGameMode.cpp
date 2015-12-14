@@ -50,7 +50,7 @@ void AGreyMatterGameMode::BeginPlay() {
 }
 
 bool AGreyMatterGameMode::gameIsOver() {
-	return score == maxScore || playerAmmo <= 0.0f;
+	return score == maxScore || playerAmmo <= 0.0f || remainingTime <= 0;
 }
 
 void AGreyMatterGameMode::tickRemaining() {

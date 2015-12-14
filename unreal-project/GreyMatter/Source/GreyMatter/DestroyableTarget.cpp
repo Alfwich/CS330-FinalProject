@@ -41,6 +41,9 @@ void ADestroyableTarget::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherCom
 		if(gameMode && totalHits > 0) {
 			gameMode->alterScore(scorePerHit);
 			totalHits--;
+			if(totalHits <= 0) {
+				ourVisualComponent->SetEnableGravity(true);
+			}
 		}
 	}
 }

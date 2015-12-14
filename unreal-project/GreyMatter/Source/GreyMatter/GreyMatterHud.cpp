@@ -51,7 +51,7 @@ void AGreyMatterHud::DrawHUD() {
 				if(timeRemaining > 0) {
 					timeRemaining = 0;
 				}
-				FText endText = FText::Format( LOCTEXT("EndText2", "Returning to main menu in {0}"), FText::AsNumber(5.0f - timeRemaining));
+				FText endText = FText::Format( LOCTEXT("EndText2", "Returning to main menu in {0}"), FText::AsNumber(5.0f + timeRemaining));
 				FCanvasTextItem endTextItem(FVector2D(HUDXRatio * (Canvas->SizeY/2.0f), HUDYRatio * 245.0f), endText, HUDFont, FLinearColor::White);
 				endTextItem.Scale = ScaleVec;
 				Canvas->DrawItem(endTextItem);
