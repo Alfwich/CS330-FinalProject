@@ -24,13 +24,15 @@ class AGreyMatterPawn : public AWheeledVehicle
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* InternalCamera;
 
-	/** Text component for the In-Car speed */
+	/*
+	// Text component for the In-Car speed
 	UPROPERTY(Category = Display, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UTextRenderComponent* InCarSpeed;
 
-	/** Text component for the In-Car gear */
+	// Text component for the In-Car gear
 	UPROPERTY(Category = Display, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UTextRenderComponent* InCarGear;
+	*/
 
 	UStaticMeshComponent *turretBaseCmp;
 	UArrowComponent      *turretBarrelFacingCmp;
@@ -40,12 +42,16 @@ public:
 	AGreyMatterPawn();
 
 	/** The current speed as a string eg 10 km/h */
+	/*
 	UPROPERTY(Category = Display, VisibleDefaultsOnly, BlueprintReadOnly)
 	FText SpeedDisplayString;
+	*/
 
 	/** The current gear as a string (R,N, 1,2 etc) */
+	/*
 	UPROPERTY(Category = Display, VisibleDefaultsOnly, BlueprintReadOnly)
 	FText GearDisplayString;
+	*/
 
 	UPROPERTY(Category = Display, VisibleDefaultsOnly, BlueprintReadOnly)
 	/** The color of the incar gear text in forward gears */
@@ -125,12 +131,7 @@ private:
 public:
 	/** Returns SpringArm subobject **/
 	FORCEINLINE USpringArmComponent* GetSpringArm() const { return SpringArm; }
+	
 	/** Returns Camera subobject **/
 	FORCEINLINE UCameraComponent* GetCamera() const { return Camera; }
-	/** Returns InternalCamera subobject **/
-	FORCEINLINE UCameraComponent* GetInternalCamera() const { return InternalCamera; }
-	/** Returns InCarSpeed subobject **/
-	FORCEINLINE UTextRenderComponent* GetInCarSpeed() const { return InCarSpeed; }
-	/** Returns InCarGear subobject **/
-	FORCEINLINE UTextRenderComponent* GetInCarGear() const { return InCarGear; }
 };

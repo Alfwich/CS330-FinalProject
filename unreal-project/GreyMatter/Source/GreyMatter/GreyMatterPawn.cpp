@@ -71,7 +71,7 @@ AGreyMatterPawn::AGreyMatterPawn() {
 	Camera->bUsePawnControlRotation = false;
 	Camera->FieldOfView = 90.f;
 
-	// Create text render component for in car speed display
+	/* Create text render component for in car speed display
 	InCarSpeed = CreateDefaultSubobject<UTextRenderComponent>(TEXT("IncarSpeed"));
 	InCarSpeed->SetRelativeLocation(FVector(70.0f, -75.0f, 99.0f));
 	InCarSpeed->SetRelativeRotation(FRotator(18.0f, 180.0f, 0.0f));
@@ -84,6 +84,7 @@ AGreyMatterPawn::AGreyMatterPawn() {
 	InCarGear->SetRelativeRotation(FRotator(25.0f, 180.0f,0.0f));
 	InCarGear->SetRelativeScale3D(FVector(1.0f, 0.4f, 0.4f));
 	InCarGear->AttachTo(GetMesh());
+	*/
 
 	// Colors for the incar gear display. One for normal one for reverse
 	GearDisplayReverseColor = FColor(255, 0, 0, 255);
@@ -166,7 +167,7 @@ void AGreyMatterPawn::Tick(float Delta) {
 		UpdateHUDStrings();
 
 		// Set the string in the incar hud
-		SetupInCarHUD();
+		// SetupInCarHUD();
 
 		// Update the behind camera rotation
 	  FRotator HeadRotation = SpringArm->RelativeRotation;
@@ -213,6 +214,7 @@ void AGreyMatterPawn::OnResetVR() {
 }
 
 void AGreyMatterPawn::UpdateHUDStrings() {
+	/*
 	float KPH = FMath::Abs(GetVehicleMovement()->GetForwardSpeed()) * 0.036f;
 	int32 KPH_int = FMath::FloorToInt(KPH);
 
@@ -228,9 +230,11 @@ void AGreyMatterPawn::UpdateHUDStrings() {
 		int32 Gear = GetVehicleMovement()->GetCurrentGear();
 		GearDisplayString = (Gear == 0) ? LOCTEXT("N", "N") : FText::AsNumber(Gear);
 	}
+	*/
 }
 
 void AGreyMatterPawn::SetupInCarHUD() {
+	/*
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if ((PlayerController != nullptr) && (InCarSpeed != nullptr) && (InCarGear != nullptr) )
 	{
@@ -247,6 +251,7 @@ void AGreyMatterPawn::SetupInCarHUD() {
 			InCarGear->SetTextRenderColor(GearDisplayReverseColor);
 		}
 	}
+	*/
 }
 
 #undef LOCTEXT_NAMESPACE
